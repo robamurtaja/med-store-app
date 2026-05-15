@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "711489031706",
+    "project_id": "medical-devices-app",
+    "storage_bucket": "medical-devices-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711489031706:android:b0c7fe8229347f1b8ecba3",
+        "android_client_info": {
+          "package_name": "com.example.medical_devices_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdPQs33_VHVAi5QwsDRX6v7cIOLCfGNOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
