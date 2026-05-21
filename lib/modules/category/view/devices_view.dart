@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:medical_devices_app/core/widgets/netwrok_image_widget.dart';
 import 'package:medical_devices_app/modules/home/controller/favorite_controller.dart';
 import '../../../core/router/router.dart';
@@ -138,7 +138,7 @@ class _DeviceViewState extends State<DeviceView> {
     }
   }
 
-  int _priceOf(DeviceModel device) => int.tryParse(device.price) ?? 0;
+  int _priceOf(DeviceModel device) => device.priceValue;
 }
 
 class _SortBar extends StatelessWidget {

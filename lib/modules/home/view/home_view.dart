@@ -68,9 +68,10 @@ class _HomeViewState extends State<HomeView> {
       appBar: const AppBarCustom(title: 'الرئيسية', showCart: true),
       body: RefreshIndicator(
         onRefresh: () => Future.wait([
-          context.read<CategoryController>().getCategory(),
-          context.read<HomeController>().getLastAddedDevices(),
-          context.read<HomeController>().getMostOrderedDevices(),
+          context.read<HomeController>().getDevices(force: true),
+          context.read<CategoryController>().getCategory(force: true),
+          context.read<HomeController>().getLastAddedDevices(force: true),
+          context.read<HomeController>().getMostOrderedDevices(force: true),
         ]),
         child: ListView(
           physics: const BouncingScrollPhysics(),

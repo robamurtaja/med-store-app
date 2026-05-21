@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:medical_devices_app/core/widgets/netwrok_image_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -110,11 +111,41 @@ class DevicesSearchDelegate extends SearchDelegate {
   }
 }
 
-class _SearchContent extends StatelessWidget {
+class _SearchContent extends StatefulWidget {
   const _SearchContent({required this.query, this.onSuggestionTap});
 
   final String query;
   final ValueChanged<String>? onSuggestionTap;
+
+  @override
+  State<_SearchContent> createState() => _SearchContentState();
+}
+
+class _SearchContentState extends State<_SearchContent> {
+  Timer? _debounce;
+  late String _visibleQuery = widget.query;
+
+  @override
+  void didUpdateWidget(covariant _SearchContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.query == widget.query) return;
+
+    _debounce?.cancel();
+    if (widget.query.trim().isEmpty) {
+      setState(() => _visibleQuery = widget.query);
+      return;
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 220), () {
+      if (mounted) setState(() => _visibleQuery = widget.query);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,46 +172,76 @@ class _SearchContent extends StatelessWidget {
               );
             }
 
-            final devices = _filterDevices(
-              homeProvider.devices.data ?? [],
-              query,
-            );
-            final isSearching = query.trim().isNotEmpty;
+            final allDevices = homeProvider.devices.data ?? [];
+            final devices = _filterDevices(allDevices, _visibleQuery);
+            final isSearching = _visibleQuery.trim().isNotEmpty;
 
-            return ListView(
+            return CustomScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 24),
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        isSearching ? 'نتائج البحث' : 'اقتراحات سريعة',
-                        style: context.h1.copyWith(
-                          fontSize: 18,
-                          color: theme.colorScheme.onSurface,
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                isSearching ? 'نتائج البحث' : 'اقتراحات سريعة',
+                                style: context.h1.copyWith(
+                                  fontSize: 18,
+                                  color: theme.colorScheme.onSurface,
+                                ),
+                              ),
+                            ),
+                            if (isSearching)
+                              Text(
+                                '${devices.length} نتيجة',
+                                style: context.b1.copyWith(
+                                  fontSize: 13,
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.58),
+                                ),
+                              ),
+                          ],
                         ),
-                      ),
+                        const SizedBox(height: 14),
+                        if (!isSearching) ...[
+                          _QuickSuggestions(
+                            devices: allDevices,
+                            onTap: widget.onSuggestionTap,
+                          ),
+                          const SizedBox(height: 18),
+                        ],
+                      ],
                     ),
-                    if (isSearching)
-                      Text(
-                        '${devices.length} نتيجة',
-                        style: context.b1.copyWith(
-                          fontSize: 13,
-                          color: theme.colorScheme.onSurface.withOpacity(0.58),
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 14),
-                if (!isSearching) ...[
-                  _QuickSuggestions(devices: devices, onTap: onSuggestionTap),
-                  const SizedBox(height: 18),
-                ],
                 if (devices.isEmpty)
-                  _EmptySearchState(isSearching: isSearching)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _EmptySearchState(isSearching: isSearching),
+                  )
                 else
-                  _SearchResultsGrid(devices: devices),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) =>
+                            _SearchResultCard(device: devices[index]),
+                        childCount: devices.length,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.72,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                    ),
+                  ),
               ],
             );
           },
@@ -193,11 +254,13 @@ class _SearchContent extends StatelessWidget {
     final term = query.trim().toLowerCase();
     if (term.isEmpty) return devices;
 
-    return devices.where((device) {
-      final name = device.name.toLowerCase();
-      final details = device.details.toLowerCase();
-      return name.contains(term) || details.contains(term);
-    }).toList();
+    return devices
+        .where((device) {
+          final name = device.name.toLowerCase();
+          final details = device.details.toLowerCase();
+          return name.contains(term) || details.contains(term);
+        })
+        .toList(growable: false);
   }
 }
 
@@ -319,29 +382,6 @@ class _EmptySearchState extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SearchResultsGrid extends StatelessWidget {
-  const _SearchResultsGrid({required this.devices});
-
-  final List<DeviceModel> devices;
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      itemCount: devices.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.72,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemBuilder: (context, index) =>
-          _SearchResultCard(device: devices[index]),
     );
   }
 }

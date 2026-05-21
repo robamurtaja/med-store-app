@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:medical_devices_app/core/widgets/netwrok_image_widget.dart';
 import 'package:medical_devices_app/modules/home/controller/favorite_controller.dart';
 import 'package:provider/provider.dart';
@@ -194,9 +194,9 @@ class HomeProductCard extends StatelessWidget {
                                   .read<CategoryController>()
                                   .addToCart(item, 1);
                               if (added && context.mounted) {
-                                context
-                                    .read<OrderController>()
-                                    .getCartDevices();
+                                context.read<OrderController>().getCartDevices(
+                                  force: true,
+                                );
                               }
                             },
                             child: Container(
