@@ -47,7 +47,7 @@ class ProfileController extends ChangeNotifier {
   Future<void> emailSupport() async {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
-      path: 'abumaraq.comp@gmail.com',
+      path: 'raghadaltawille@gmail.com',
       queryParameters: <String, String>{'subject': 'Support'},
     );
 
@@ -60,7 +60,7 @@ class ProfileController extends ChangeNotifier {
 
   Future<void> callSupport() async {
     try {
-      Uri email = Uri(scheme: 'tel', path: "+972593633418");
+      Uri email = Uri(scheme: 'tel', path: "+972593295356");
       await launchUrl(email);
     } catch (e) {
       debugPrint(e.toString());
