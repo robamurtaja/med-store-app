@@ -1,6 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:medical_devices_app/modules/bnb/controller/bnb_controller.dart';
 import 'package:medical_devices_app/modules/home/controller/favorite_controller.dart';
 import 'core/router/router.dart';
 import 'core/router/routers_name.dart';
@@ -33,13 +35,15 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ThemeController()),
         ChangeNotifierProvider(create: (context) => CategoryController()),
         ChangeNotifierProvider(create: (context) => HomeController()),
+        ChangeNotifierProvider(create: (context) => BnbController()),
+
         ChangeNotifierProvider(
           create: (context) => FavoriteController()..loadFavorites(),
         ),
         ChangeNotifierProvider(create: (context) => OrderController()),
         ChangeNotifierProvider(create: (context) => ProfileController()),
       ],
-      child: const MyApp(),
+      child: ProviderScope(child: const MyApp()),
     ),
   );
   FlutterNativeSplash.remove();

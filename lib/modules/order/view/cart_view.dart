@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medical_devices_app/core/router/routers_name.dart';
 import 'package:medical_devices_app/core/widgets/netwrok_image_widget.dart';
+import 'package:medical_devices_app/modules/order/view/otp_screen.dart';
 import '../../../core/services/remote_services/base_model.dart';
 import '../../../core/utils/color_manager.dart';
 import '../../../core/utils/extentions.dart';
@@ -395,19 +397,14 @@ class _CartViewState extends State<CartView> {
                                             if (formKey.currentState
                                                     ?.validate() ??
                                                 false) {
-                                              context
-                                                  .read<OrderController>()
-                                                  .completeOrder(
-                                                    address:
-                                                        addressController.text,
-                                                    mobile:
-                                                        mobileController.text,
-                                                  )
-                                                  .then((value) {
-                                                    if (context.mounted) {
-                                                      Navigator.pop(context);
-                                                    }
-                                                  });
+                                              Navigator.pushNamed(
+                                                context,
+                                                RouteName.otpScreen,
+                                                arguments: OtpArgs(
+                                                  mobileController.text,
+                                                  addressController.text,
+                                                ),
+                                              );
                                             }
                                           },
                                           child: const Text(

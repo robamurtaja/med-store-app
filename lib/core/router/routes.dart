@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medical_devices_app/modules/home/view/favorite_screen.dart';
+import 'package:medical_devices_app/modules/order/view/otp_screen.dart';
 import 'routers_name.dart';
 import '../../modules/auth/controller/auth_controller.dart';
 import '../../modules/auth/view/auth_view.dart';
@@ -72,10 +73,9 @@ class RouteGenerator {
         );
       case RouteName.mainAppView:
         return MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (context) => BnbController(),
-            child: const MainAppView(),
-          ),
+          
+            builder: (_) => const MainAppView(),
+          
           settings: const RouteSettings(name: RouteName.mainAppView),
         );
 
@@ -139,6 +139,12 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => const FavoriteScreen(),
           settings: const RouteSettings(name: RouteName.favoriteView),
+        );
+
+      case RouteName.otpScreen:
+        return MaterialPageRoute(
+          builder: (_) => OtpScreen(otpArgs: settings.arguments as OtpArgs),
+          settings: const RouteSettings(name: RouteName.otpScreen),
         );
 
       default:

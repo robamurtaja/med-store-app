@@ -1,5 +1,6 @@
 ﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:medical_devices_app/core/widgets/loading_widget.dart';
 import '../../../core/router/router.dart';
 import '../../../core/services/remote_services/base_model.dart';
 import '../../../core/services/remote_services/firebase_init.dart';
@@ -84,10 +85,13 @@ class OrderController extends ChangeNotifier {
     required String address,
     required String mobile,
   }) async {
+    loadingWithText(text: 'اكمال الطلب...');
+
     try {
       final currentCart = cart.data ?? [];
       if (currentCart.isEmpty) {
         showSnackBarCustom(text: 'السلة فارغة');
+        NavigationManager.mayPop();
         return;
       }
 
@@ -130,10 +134,10 @@ class OrderController extends ChangeNotifier {
         text: 'تمت الإضافة بنجاح لقائمة الطلبات',
         backgroundColor: Colors.green,
       );
-
       NavigationManager.mayPop();
     } catch (e) {
       debugPrint(e.toString());
+      NavigationManager.mayPop();
       showSnackBarCustom(text: 'فشل تأكيد الطلب');
     }
   }

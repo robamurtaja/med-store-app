@@ -1,5 +1,4 @@
 extension ValidationExt on String {
-
   String? get isValidEmail {
     final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     String? result;
@@ -74,5 +73,29 @@ extension ValidationExt on String {
       result = 'مسموح ادخال ارقام فقط';
     }
     return result;
+  }
+
+  String? get validateOTP {
+    // Check if the OTP is empty
+    if (isEmpty) {
+      return 'هذا الحقل مطلوب';
+    }
+
+    // Check if the OTP is exactly 6 characters long (adjust as needed)
+    if (length != 6) {
+      return 'الرمز يجب أن يكون 6 أرقام';
+    }
+
+    if (length < 6) {
+      return 'الرمز غير كامل';
+    }
+
+    // Check if the OTP contains only numbers
+    if (!RegExp(r'^\d+$').hasMatch(this)) {
+      return 'مسموح ادخال ارقام فقط';
+    }
+
+    // If all validations pass, return null (no errors)
+    return null;
   }
 }

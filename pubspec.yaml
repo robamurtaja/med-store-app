@@ -1,4 +1,4 @@
-﻿name: medical_devices_app
+name: medical_devices_app
 description: "A new Flutter project."
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -29,6 +29,8 @@ dependencies:
   shimmer: ^3.0.0
   smooth_page_indicator: ^2.0.1
   url_launcher: ^6.3.2
+  pinput: ^6.0.2
+  hooks_riverpod: ^3.3.1
 
 dev_dependencies:
   flutter_lints: ^6.0.0

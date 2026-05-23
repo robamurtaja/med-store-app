@@ -16,5 +16,5 @@ class RouteName {
   static const String usesPoliceView = 'usesPoliceView';
   static const String faqView = 'faqView';
   static const String favoriteView = 'favoriteView';
-  
+  static const String otpScreen = 'OtpScreen';
 }
